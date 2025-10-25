@@ -114,8 +114,32 @@ CompilationStatus IntegerLexemeAction() {
 	return status;
 }
 
+CompilationStatus EnterBlockCodeLexemeAction(FlexContext context){
+	if(_logIgnoredLexemes) {
+		Token * token = createToken(_lexicalAnalyzer, OPEN_BRACE);
+		_logTokenAction(__FUNCTION__, token);
+		destroyToken(token);
+	}
+	enterLexicalAnalyzerContext(_lexicalAnalyzer, context);
+	return IN_PROGRESS;
+}
+
 CompilationStatus LeaveImportExpressionLexemeAction() {
 	pushInputBuffer(_inputBuffer);
+	leaveLexicalAnalyzerContext(_lexicalAnalyzer);
+	if (_logIgnoredLexemes) {
+		Token * token = createToken(_lexicalAnalyzer, CLOSE_BRACE);
+		_logTokenAction(__FUNCTION__, token);
+		destroyToken(token);
+	}
+	return IN_PROGRESS;
+}
+
+CompilationStatus IdentifierLexemeAction(const char* yytext){
+	
+}
+
+CompilationStatus LeaveImportExpressionLexemeAction() {
 	leaveLexicalAnalyzerContext(_lexicalAnalyzer);
 	if (_logIgnoredLexemes) {
 		Token * token = createToken(_lexicalAnalyzer, CLOSE_BRACE);

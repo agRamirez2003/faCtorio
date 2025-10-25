@@ -35,6 +35,7 @@ extern CompilationStatus UnknownLexemeAction();
  */
 %x IMPORT_EXPRESSION
 %x MULTILINE_COMMENT
+%x BLOCK_CODE
 
 /**
  * Reusable patterns.
@@ -54,10 +55,9 @@ whitespace			[[:space:]]+
 
 %}
 
-"{"									{ return EnterImportExpressionLexemeAction(IMPORT_EXPRESSION); }
-<IMPORT_EXPRESSION>[^{}]+			{ return SubexpressionLexemeAction(); }
-<IMPORT_EXPRESSION>"}"				{ return LeaveImportExpressionLexemeAction(); }
-<IMPORT_EXPRESSION>.				{ return UnknownLexemeAction(); }
+"{"									{ return EnterBlockCodeLexemeAction(BLOCK_CODE)}
+"[a-zA-Z_][a-zA-Z0-9_]*"            { return IdentifierLexemeAction(yytext)}
+<BLOCK_CODE>"}"                     { return LeaveBlockCodeLexemeAction()}
 
 "/*"								{ return EnterMultilineCommentLexemeAction(MULTILINE_COMMENT); }
 <MULTILINE_COMMENT>"*/"				{ return LeaveMultilineCommentLexemeAction(); }
