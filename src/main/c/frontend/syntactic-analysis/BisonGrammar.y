@@ -81,8 +81,8 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %token <token> DEFINE
 %token <string> ID
 %token <token> SEMICOLON
-%token <token> ASSIGN
 %token <token> RETURN
+%token <token> EQUALS
 
 %token <token> IGNORED
 %token <token> UNKNOWN
@@ -134,7 +134,7 @@ declarationList: declarationList declaration				{ $$ = DeclarationListSemanticAc
 	;
 
 declaration: type ID SEMICOLON							{ $$ = VariableDeclarationSemanticAction($1, $2); }
-	| type ID ASSIGN expression SEMICOLON				{ $$ = AssignationDeclarationSemanticAction($1, $2, $4); }
+	| type ID EQUALS expression SEMICOLON				{ $$ = AssignationDeclarationSemanticAction($1, $2, $4); }
 	| RETURN expression SEMICOLON						{ $$ = ReturnDeclarationSemanticAction($2); }
 	;
 
@@ -149,9 +149,10 @@ expression: expression[left] ADD expression[right]			{ $$ = ArithmeticExpression
 
 factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS		{ $$ = ExpressionFactorSemanticAction($2); }
 	| constant												{ $$ = ConstantFactorSemanticAction($1); }
+	| ID										            { $$ = IdentifierFactorSemanticAction($1); }	
 	;
 
-constant: INT											{ $$ = IntegerConstantSemanticAction($1); }
+constant: INTEGER											{ $$ = IntegerConstantSemanticAction($1); }
 	;
 
 type: INT												{ $$ = IntTypeSemanticAction($1); }

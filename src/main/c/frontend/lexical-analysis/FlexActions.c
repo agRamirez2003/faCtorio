@@ -199,3 +199,11 @@ CompilationStatus CommaLexemeAction() {
 	destroyToken(token);
 	return status;
 }
+
+CompilationStatus EqualsLexemeAction() {
+	Token * token = createToken(_lexicalAnalyzer, EQUALS);
+	_logTokenAction(__FUNCTION__, token);
+	CompilationStatus status = pushToken(_lexicalAnalyzer, token);
+	destroyToken(token);
+	return status;
+}

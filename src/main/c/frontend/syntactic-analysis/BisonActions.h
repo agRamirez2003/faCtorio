@@ -21,6 +21,7 @@ Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Exp
 Expression * FactorExpressionSemanticAction(Factor * factor);
 Factor * ConstantFactorSemanticAction(Constant * constant);
 Factor * ExpressionFactorSemanticAction(Expression * expression);
+Factor * IdentifierFactorSemanticAction(char * id);
 Program * functionProgramSemanticAction(FunctionDeclaration * functionDeclaration);
 FunctionDeclaration* FunctionDeclarationSemanticAction(Type* type, char* id, ParameterList* parameters, DeclarationList* declarationList);
 ParameterList* ParameterListSemanticAction(ParameterList* parameterList, Parameter* parameter);

@@ -38,7 +38,7 @@ enum ExpressionType {
 	DIVISION,
 	FACTOR,
 	MULTIPLICATION,
-	SUBTRACTION
+	SUBTRACTION,
 };
 
 enum DeclarationType {
@@ -80,7 +80,7 @@ struct DeclarationList{
 };
 
 
-// Si se quiere añadir mas tipos de declaraciones, agregar a la union el nuevo struct e incluir el nuevo tipo en el enum DeclationType, ademas de el action, destructor y la regla en el bison.
+// Si se quiere añadir mas tipos de declaraciones, agregar a la union el nuevo struct e incluir el nuevo tipo en el enum DeclarationType, ademas de el action, destructor y la regla en el bison.
 struct Declaration{
 	union {
 		struct { // type ID; | int x;

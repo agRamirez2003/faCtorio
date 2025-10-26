@@ -56,6 +56,9 @@ void destroyFactor(Factor * factor) {
 			case EXPRESSION:
 				destroyExpression(factor->expression);
 				break;
+			case IDENTIFIER:
+				free(factor->id);
+				break;	
 		}
 		free(factor);
 	}

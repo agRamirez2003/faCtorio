@@ -30,6 +30,7 @@ extern CompilationStatus CommaLexemeAction();
 extern CompilationStatus DefineLexemeAction();
 extern CompilationStatus EnterDeclarationBlockLexemeAction(FlexContext context);
 extern CompilationStatus LeaveDeclarationBlockLexemeAction();
+extern CompilationStatus EqualsLexemeAction();
 
 %}
 
@@ -61,13 +62,16 @@ whitespace			[[:space:]]+
 
 "{"									                    { return EnterDeclarationBlockLexemeAction(DECLARATION_BLOCK); }
 <DECLARATION_BLOCK>"int"                                { return KeywordLexemeAction(INT); }
+<DECLARATION_BLOCK>"return"                             { return KeywordLexemeAction(RETURN); }
 <DECLARATION_BLOCK>[a-zA-Z_][a-zA-Z0-9_]*               { return IdentifierLexemeAction(); }
+<DECLARATION_BLOCK>[[:digit:]]+						    { return IntegerLexemeAction(); }
 <DECLARATION_BLOCK>"}"				                    { return LeaveDeclarationBlockLexemeAction(); }
 <DECLARATION_BLOCK>"-"									{ return ArithmeticOperatorLexemeAction(SUB); }
 <DECLARATION_BLOCK>"*"									{ return ArithmeticOperatorLexemeAction(MUL); }
 <DECLARATION_BLOCK>"/"									{ return ArithmeticOperatorLexemeAction(DIV); }
 <DECLARATION_BLOCK>"+"									{ return ArithmeticOperatorLexemeAction(ADD); }
 <DECLARATION_BLOCK>";"                                  { return SemicolonLexemeAction(); }
+<DECLARATION_BLOCK>"="                                  { return EqualsLexemeAction(); }                
 <DECLARATION_BLOCK>{whitespace}						    { return IgnoredLexemeAction(); }
 <DECLARATION_BLOCK>.				                    { return UnknownLexemeAction(); }
 

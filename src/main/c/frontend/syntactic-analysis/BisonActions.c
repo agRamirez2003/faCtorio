@@ -54,10 +54,24 @@ Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Exp
 
 Expression * FactorExpressionSemanticAction(Factor * factor) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
+	if (factor->type == EXPRESSION) {
+        Expression *inner = factor->expression;
+        factor->expression = NULL;
+        free(factor);
+        return inner;
+    }
 	Expression * expression = calloc(1, sizeof(Expression));
 	expression->factor = factor;
 	expression->type = FACTOR;
 	return expression;
+}
+
+Factor * IdentifierFactorSemanticAction(char * id) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Factor * factor = calloc(1, sizeof(Expression));
+	factor->id = id;
+	factor->type = IDENTIFIER;
+	return factor;
 }
 
 Factor * ConstantFactorSemanticAction(Constant * constant) {
