@@ -25,6 +25,9 @@ extern CompilationStatus LeaveMultilineCommentLexemeAction();
 extern CompilationStatus ParenthesisLexemeAction(TokenLabel label);
 extern CompilationStatus SubexpressionLexemeAction();
 extern CompilationStatus UnknownLexemeAction();
+extern CompilationStatus KeywordLexemeAction();
+extern CompilationStatus IdentifierLexemeAction();
+extern CompilationStatus SemicolonLexemeAction();
 
 %}
 
@@ -76,6 +79,10 @@ whitespace			[[:space:]]+
 
 {whitespace}						{ return IgnoredLexemeAction(); }
 .									{ return UnknownLexemeAction(); }
+
+"int"                               { return KeywordLexemeAction(INT); }
+[a-zA-Z_][a-zA-Z0-9_]*              { return IdentifierLexemeAction(); }
+";"                                 { return SemicolonLexemeAction(); }
 
 <<EOF>>								{ return EOFLexemeAction(); }
 

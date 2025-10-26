@@ -23,4 +23,7 @@ Factor * ConstantFactorSemanticAction(Constant * constant);
 Factor * ExpressionFactorSemanticAction(Expression * expression);
 Program * ExpressionProgramSemanticAction(Expression * expression);
 
+Program *DeclarationProgramSemanticAction();
+void *SimpleDeclarationSemanticAction();
+
 #endif

@@ -83,3 +83,36 @@ Program * ExpressionProgramSemanticAction(Expression * expression) {
 	_compilerState->abstractSyntaxtTree = program;
 	return program;
 }
+
+Program *DeclarationProgramSemanticAction() {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    return NULL;  // más adelante devolverá un nodo del AST
+}
+
+void *SimpleDeclarationSemanticAction() {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+    return NULL;
+}
+/*
+Statement * DeclarationStatementSemanticAction(Declaration * declaration) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Statement * statement = calloc(1, sizeof(Statement));
+	statement->declaration = declaration;
+	statement->type = DECLARATION_STATEMENT;
+	return statement;
+}
+
+Declaration * DeclarationSemanticAction(Token * identifier, OptionalInitializer * initializer) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Declaration * declaration = calloc(1, sizeof(Declaration));
+	declaration->identifier = identifier;
+	declaration->initializer = initializer;
+	return declaration;
+}
+
+OptionalInitializer * OptionalInitializerEmptySemanticAction(void) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	OptionalInitializer * optionalInitializer = calloc(1, sizeof(OptionalInitializer));
+	optionalInitializer->isPresent = 0;
+	return optionalInitializer;
+}*/

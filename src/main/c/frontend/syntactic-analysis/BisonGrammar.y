@@ -61,6 +61,9 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %token <token> OPEN_COMMENT
 %token <token> OPEN_PARENTHESIS
 %token <token> SUB
+%token <token> INT
+%token <token> ID
+%token <token> SEMICOLON
 
 %token <token> IGNORED
 %token <token> UNKNOWN
@@ -70,6 +73,7 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %type <expression> expression
 %type <factor> factor
 %type <program> program
+%type <program> declaration
 
 /**
  * Precedence and associativity.

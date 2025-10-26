@@ -1,0 +1,2 @@
+/Users/Usuario/Desktop/faCtorio/faCtorio/build/CMakeFiles/edit_cache.dir
+/Users/Usuario/Desktop/faCtorio/faCtorio/build/CMakeFiles/rebuild_cache.dir

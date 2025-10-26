@@ -159,3 +159,28 @@ CompilationStatus UnknownLexemeAction() {
 	destroyToken(token);
 	return FAILED;
 }
+
+
+CompilationStatus KeywordLexemeAction(TokenLabel label) {
+    Token * token = createToken(_lexicalAnalyzer, label);
+    _logTokenAction(__FUNCTION__, token);
+    CompilationStatus status = pushToken(_lexicalAnalyzer, token);
+    destroyToken(token);
+    return status;
+}
+
+CompilationStatus IdentifierLexemeAction() {
+    Token * token = createToken(_lexicalAnalyzer, ID);
+    _logTokenAction(__FUNCTION__, token);
+    CompilationStatus status = pushToken(_lexicalAnalyzer, token);
+    destroyToken(token);
+    return status;
+}
+
+CompilationStatus SemicolonLexemeAction() {
+    Token * token = createToken(_lexicalAnalyzer, SEMICOLON);
+    _logTokenAction(__FUNCTION__, token);
+    CompilationStatus status = pushToken(_lexicalAnalyzer, token);
+    destroyToken(token);
+    return status;
+}
