@@ -199,27 +199,3 @@ Type * IntTypeSemanticAction(TokenLabel token) {
     type->type = INT_TYPE;   // o el valor correspondiente en tu enum de tipos
     return type;
 }
-
-/*
-Statement * DeclarationStatementSemanticAction(Declaration * declaration) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Statement * statement = calloc(1, sizeof(Statement));
-	statement->declaration = declaration;
-	statement->type = DECLARATION_STATEMENT;
-	return statement;
-}
-
-Declaration * DeclarationSemanticAction(Token * identifier, OptionalInitializer * initializer) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Declaration * declaration = calloc(1, sizeof(Declaration));
-	declaration->identifier = identifier;
-	declaration->initializer = initializer;
-	return declaration;
-}
-
-OptionalInitializer * OptionalInitializerEmptySemanticAction(void) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	OptionalInitializer * optionalInitializer = calloc(1, sizeof(OptionalInitializer));
-	optionalInitializer->isPresent = 0;
-	return optionalInitializer;
-}*/

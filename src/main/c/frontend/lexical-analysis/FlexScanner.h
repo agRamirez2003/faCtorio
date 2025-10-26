@@ -253,7 +253,7 @@ void yyfree ( void * , yyscan_t yyscanner );
 
 #ifdef YY_HEADER_EXPORT_START_CONDITIONS
 #define INITIAL 0
-#define IMPORT_EXPRESSION 1
+#define DECLARATION_BLOCK 1
 #define MULTILINE_COMMENT 2
 
 #endif
@@ -518,7 +518,7 @@ extern int yylex \
 #undef yyTABLES_NAME
 #endif
 
-#line 93 "src/main/c/frontend/lexical-analysis/FlexPatterns.l"
+#line 107 "src/main/c/frontend/lexical-analysis/FlexPatterns.l"
 
 
 #line 525 "src/main/c/frontend/lexical-analysis/FlexScanner.h"

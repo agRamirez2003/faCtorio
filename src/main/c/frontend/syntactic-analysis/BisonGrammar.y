@@ -133,9 +133,9 @@ declarationList: declarationList declaration				{ $$ = DeclarationListSemanticAc
 	|														{ $$ = NULL; }
 	;
 
-declaration: type ID SEMICOLON							{ $$ = VariableDeclarationSemanticAction($1, $2); }
-	| type ID EQUALS expression SEMICOLON				{ $$ = AssignationDeclarationSemanticAction($1, $2, $4); }
-	| RETURN expression SEMICOLON						{ $$ = ReturnDeclarationSemanticAction($2); }
+declaration: type ID SEMICOLON							    { $$ = VariableDeclarationSemanticAction($1, $2); }
+	| type ID EQUALS expression SEMICOLON				    { $$ = AssignationDeclarationSemanticAction($1, $2, $4); }
+	| RETURN expression SEMICOLON						    { $$ = ReturnDeclarationSemanticAction($2); }
 	;
 
 
@@ -155,7 +155,7 @@ factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS		{ $$ = ExpressionFactorSe
 constant: INTEGER											{ $$ = IntegerConstantSemanticAction($1); }
 	;
 
-type: INT												{ $$ = IntTypeSemanticAction($1); }
+type: INT												    { $$ = IntTypeSemanticAction($1); }
 	;
 
 %%

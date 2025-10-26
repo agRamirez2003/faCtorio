@@ -1,3 +1,7 @@
 #define fun(){
     int a;
 }
+
+int main(int argc, int argv){
+    int a;
+}

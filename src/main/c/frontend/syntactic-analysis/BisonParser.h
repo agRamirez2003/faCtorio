@@ -72,8 +72,8 @@ extern int yydebug;
     DEFINE = 273,                  /* DEFINE  */
     ID = 274,                      /* ID  */
     SEMICOLON = 275,               /* SEMICOLON  */
-    ASSIGN = 276,                  /* ASSIGN  */
-    RETURN = 277,                  /* RETURN  */
+    RETURN = 276,                  /* RETURN  */
+    EQUALS = 277,                  /* EQUALS  */
     IGNORED = 278,                 /* IGNORED  */
     UNKNOWN = 279                  /* UNKNOWN  */
   };
@@ -91,6 +91,7 @@ union SemanticValue
 
 	signed int integer;
 	TokenLabel token;
+	char* string;
 
 	/** Non-terminals. */
 
@@ -105,7 +106,7 @@ union SemanticValue
 	Type * type;
 	Declaration * declaration;
 
-#line 109 "src/main/c/frontend/syntactic-analysis/BisonParser.h"
+#line 110 "src/main/c/frontend/syntactic-analysis/BisonParser.h"
 
 };
 #line 22 "src/main/c/frontend/syntactic-analysis/BisonGrammar.y"

@@ -3,3 +3,7 @@
     c = x + y;
     return c;
 }
+
+int main(int argc, int argv){
+    int a;
+}
