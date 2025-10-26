@@ -31,6 +31,7 @@ DeclarationList* SingleDeclarationSemanticAction(Declaration* declaration);
 Declaration* VariableDeclarationSemanticAction(Type* type, char* id);
 Declaration* AssignationDeclarationSemanticAction(Type* type, char* id, Expression* expression);
 Declaration* ReturnDeclarationSemanticAction(Expression* expression);
+Type * IntTypeSemanticAction(TokenLabel token);
 
 Program *DeclarationProgramSemanticAction();
 void *SimpleDeclarationSemanticAction();

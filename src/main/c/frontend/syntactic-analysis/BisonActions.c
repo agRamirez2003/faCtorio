@@ -178,6 +178,13 @@ void *SimpleDeclarationSemanticAction() {
     return NULL;
 }
 
+Type * IntTypeSemanticAction(TokenLabel token) {
+    _logSyntacticAnalyzerAction(__FUNCTION__);
+
+    Type * type = calloc(1, sizeof(Type));
+    type->type = INT_TYPE;   // o el valor correspondiente en tu enum de tipos
+    return type;
+}
 
 /*
 Statement * DeclarationStatementSemanticAction(Declaration * declaration) {
