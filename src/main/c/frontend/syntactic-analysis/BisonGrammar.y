@@ -39,6 +39,8 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 	ParameterList * parameterList;
 	DeclarationList * declarationList;
 	Parameter * parameter;
+	Type * type;
+	Declaration * declaration;
 }
 
 /**
@@ -69,7 +71,8 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %token <token> INT
 %token <token> ID
 %token <token> SEMICOLON
-%token <token> RETURN_TYPE
+%token <token> ASSIGN
+%token <token> RETURN
 
 %token <token> IGNORED
 %token <token> UNKNOWN
@@ -80,10 +83,11 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %type <expression> expression
 %type <factor> factor
 %type <program> program
-%type <program> declaration
+%type <declaration> declaration
 %type <parameterList> parameterList
 %type <declarationList> declarationList
 %type <parameter> parameter
+%type <type> type
 
 /**
  * Precedence and associativity.
@@ -98,21 +102,33 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 
-program: functionDeclaration											{ $$ = functionDeclarationSemanticAction($1); }
+program: functionDeclaration								{ $$ = functionDeclarationSemanticAction($1); }
 	;
 
-functionDeclaration: RETURN_TYPE ID OPEN_PARENTHESIS parameterList CLOSE_PARENTHESIS OPEN_BRACE declarationList CLOSE_BRACE { $$ = FunctionDeclarationSemanticAction($1, $2, $4, $7); }
+functionDeclaration: type ID OPEN_PARENTHESIS parameterList CLOSE_PARENTHESIS OPEN_BRACE declarationList CLOSE_BRACE { $$ = FunctionDeclarationSemanticAction($1, $2, $4, $7); }
 	;	
+
+
 
 parameterList: parameterList COMMA parameter				{ $$ = ParameterListSemanticAction($1, $3); }
 	| parameter												{ $$ = ParameterListSingleSemanticAction($1); }
 	| 														{ $$ = NULL; }
 	;
 
-parameter: RETURN_TYPE ID								{ $$ = ParameterSemanticAction($1, $2); }
+parameter: type ID									{ $$ = ParameterSemanticAction($1, $2); }
 	;
 
-declarationList: declarationList declaration			{ $$ = DeclarationListSemanticAction($1, $2); }
+declarationList: declarationList declaration				{ $$ = DeclarationListSemanticAction($1, $2); }
+	| declaration 											{ $$ = DeclarationListSingleSemanticAction($1); }
+	|														{ $$ = NULL; }
+	;
+
+declaration: type ID SEMICOLON							{ $$ = DeclarationSemanticAction($1, $2); }
+	| type ID ASSIGN expression SEMICOLON				{ $$ = DeclarationWithInitializationSemanticAction($1, $2, $4); }
+	| RETURN expression SEMICOLON						{ $$ = ReturnDeclarationSemanticAction($2); }
+	;
+
+
 
 expression: expression[left] ADD expression[right]			{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
 	| expression[left] DIV expression[right]				{ $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }
@@ -125,7 +141,12 @@ factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS		{ $$ = ExpressionFactorSe
 	| constant												{ $$ = ConstantFactorSemanticAction($1); }
 	;
 
-constant: INTEGER											{ $$ = IntegerConstantSemanticAction($1); }
+constant: INT											{ $$ = IntegerConstantSemanticAction($1); }
 	;
+
+type: INT												{ $$ = IntTypeSemanticAction($1); }
+	;
+
+
 
 %%
