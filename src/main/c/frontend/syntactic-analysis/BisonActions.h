@@ -21,7 +21,16 @@ Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Exp
 Expression * FactorExpressionSemanticAction(Factor * factor);
 Factor * ConstantFactorSemanticAction(Constant * constant);
 Factor * ExpressionFactorSemanticAction(Expression * expression);
-Program * ExpressionProgramSemanticAction(Expression * expression);
+Program * functionProgramSemanticAction(FunctionDeclaration * functionDeclaration);
+FunctionDeclaration* FunctionDeclarationSemanticAction(Type* type, char* id, ParameterList* parameters, DeclarationList* declarationList);
+ParameterList* ParameterListSemanticAction(ParameterList* parameterList, Parameter* parameter);
+ParameterList* SingleParameterSemanticAction(Parameter* parameter);
+Parameter* ParameterSemanticAction(Type* type, char* id);
+DeclarationList* DeclarationListSemanticAction(DeclarationList* declarationList, Declaration* declaration);
+DeclarationList* SingleDeclarationSemanticAction(Declaration* declaration);
+Declaration* VariableDeclarationSemanticAction(Type* type, char* id);
+Declaration* AssignationDeclarationSemanticAction(Type* type, char* id, Expression* expression);
+Declaration* ReturnDeclarationSemanticAction(Expression* expression);
 
 Program *DeclarationProgramSemanticAction();
 void *SimpleDeclarationSemanticAction();

@@ -76,12 +76,96 @@ Factor * ExpressionFactorSemanticAction(Expression * expression) {
 	return factor;
 }
 
-Program * ExpressionProgramSemanticAction(Expression * expression) {
+Program * functionProgramSemanticAction(FunctionDeclaration * functionDeclaration) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Program * program = calloc(1, sizeof(Program));
-	program->expression = expression;
+	program->functionDeclaration = functionDeclaration;
 	_compilerState->abstractSyntaxtTree = program;
 	return program;
+}
+
+FunctionDeclaration* FunctionDeclarationSemanticAction(Type* type, char* id, ParameterList* parameterList, DeclarationList* declarationList) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	FunctionDeclaration* functionDeclaration = calloc(1, sizeof(FunctionDeclaration));
+	functionDeclaration->returnType = type;
+	functionDeclaration->id = id;
+	functionDeclaration->parameterList = parameterList;
+	functionDeclaration->declarationList = declarationList;
+	return functionDeclaration;
+}
+
+//Puede fallar
+ParameterList* ParameterListSemanticAction(ParameterList* parameterList, Parameter* parameter) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Parameter *it = parameterList->head;
+    while (it->next) {
+        it = it->next;
+    }
+    it->next = parameter;
+    return parameterList;
+}
+
+ParameterList* SingleParameterSemanticAction(Parameter* parameter) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ParameterList* parameterList = calloc(1, sizeof(ParameterList));
+	parameterList->head = parameter;
+	return parameterList;
+}
+
+Parameter* ParameterSemanticAction(Type* type, char* id) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Parameter* parameter = calloc(1, sizeof(Parameter));
+	parameter->type = type;
+	parameter->id = id;
+	parameter->next = NULL;
+	return parameter;
+}
+
+DeclarationList* DeclarationListSemanticAction(DeclarationList* declarationList, Declaration* declaration) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Declaration *it = declarationList->head;
+	while (it->next) {
+		it = it->next;
+	}
+	it->next = declaration;
+	return declarationList;
+}
+
+DeclarationList* SingleDeclarationSemanticAction(Declaration* declaration) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	DeclarationList* declarationList = calloc(1, sizeof(DeclarationList));
+	declarationList->head = declaration;
+	return declarationList;
+}
+
+Declaration* VariableDeclarationSemanticAction(Type* type, char* id) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Declaration* declaration = calloc(1, sizeof(Declaration));
+	declaration->type = type;
+	declaration->id = id;
+	declaration->declarationType = VAR_DECLARATION;
+	declaration->next = NULL;
+	return declaration;
+}
+
+Declaration* AssignationDeclarationSemanticAction(Type* type, char* id, Expression* expression) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Declaration* declaration = calloc(1, sizeof(Declaration));
+	declaration->type = type;
+	declaration->id = id;
+	declaration->expression = expression;
+	declaration->declarationType = ASSIGNATTION;
+	declaration->next = NULL;
+	return declaration;
+}
+
+Declaration* ReturnDeclarationSemanticAction(Expression* expression) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Declaration* declaration = calloc(1, sizeof(Declaration));
+	declaration->expression = expression;
+	declaration->declarationType = RETURN_STATEMENT;
+	declaration->next = NULL;
+	return declaration;
 }
 
 Program *DeclarationProgramSemanticAction() {
@@ -93,6 +177,8 @@ void *SimpleDeclarationSemanticAction() {
     _logSyntacticAnalyzerAction(__FUNCTION__);
     return NULL;
 }
+
+
 /*
 Statement * DeclarationStatementSemanticAction(Declaration * declaration) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);

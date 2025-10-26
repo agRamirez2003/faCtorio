@@ -64,7 +64,81 @@ void destroyFactor(Factor * factor) {
 void destroyProgram(Program * program) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (program != NULL) {
-		destroyExpression(program->expression);
+		destroyFunctionDeclaration(program->functionDeclaration);
 		free(program);
+	}
+}
+
+void destroyFunctionDeclaration(FunctionDeclaration * functionDeclaration) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (functionDeclaration != NULL) {
+		free(functionDeclaration->id);
+		destroyType(functionDeclaration->returnType);
+		destroyParameterList(functionDeclaration->parameters);
+		destroyDeclarationList(functionDeclaration->declarationList);
+		free(functionDeclaration);
+	}
+}
+
+void destroyType(Type * type) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (type != NULL) {
+		free(type);
+	}
+}
+
+void destroyParameterList(ParameterList * parameterList) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (parameterList != NULL) {
+		Parameter * currentParameter = parameterList->head;
+		while (currentParameter != NULL) {
+			Parameter * nextParameter = currentParameter->next;
+			destroyParameter(currentParameter);
+			currentParameter = nextParameter;
+		}
+		free(parameterList);
+	}
+}
+
+void destroyParameter(Parameter * parameter) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (parameter != NULL) {
+		free(parameter->id);
+		destroyType(parameter->type);
+		free(parameter);
+	}
+}
+
+void destroyDeclarationList(DeclarationList * declarationList) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (declarationList != NULL) {
+		Declaration * currentDeclaration = declarationList->head;
+		while (currentDeclaration != NULL) {
+			Declaration * nextDeclaration = currentDeclaration->next;
+			destroyDeclaration(currentDeclaration);
+			currentDeclaration = nextDeclaration;
+		}
+		free(declarationList);
+	}
+}
+
+void destroyDeclaration(Declaration * declaration) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (declaration != NULL) {
+		switch (declaration->declarationType) {
+			case VAR_DECLARATION:
+				free(declaration->id);
+				destroyType(declaration->type);
+				break;
+			case ASSIGNATTION:
+				free(declaration->id);
+				destroyType(declaration->type);
+				destroyExpression(declaration->expression);
+				break;
+			case RETURN_STATEMENT:
+				destroyExpression(declaration->expression);
+				break;
+		}
+		free(declaration);
 	}
 }

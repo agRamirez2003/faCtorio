@@ -54,6 +54,12 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %destructor { destroyConstant($$); } <constant>
 %destructor { destroyExpression($$); } <expression>
 %destructor { destroyFactor($$); } <factor>
+%destructor { destroyType($$); } <type>
+%destructor { destroyParameter($$); } <parameter>
+%destructor { destroyParameterList($$); } <parameterList>
+%destructor { destroyDeclaration($$); } <declaration>
+%destructor { destroyDeclarationList($$); } <declarationList>
+%destructor { destroyFunctionDeclaration($$); } <functionDeclaration>
 
 /** Terminals. */
 %token <token> COMMA
@@ -102,16 +108,16 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 
-program: functionDeclaration								{ $$ = functionDeclarationSemanticAction($1); }
+program: functionDeclaration								{ $$ = functionProgramSemanticAction($1); }
 	;
 
-functionDeclaration: type ID OPEN_PARENTHESIS parameterList CLOSE_PARENTHESIS OPEN_BRACE declarationList CLOSE_BRACE { $$ = FunctionDeclarationSemanticAction($1, $2, $4, $7); }
+functionDeclaration: type ID OPEN_PARENTHESIS parameterList CLOSE_PARENTHESIS OPEN_BRACE declarationList CLOSE_BRACE { $$ = functionDeclarationSemanticAction($1, $2, $4, $7); }
 	;	
 
 
 
 parameterList: parameterList COMMA parameter				{ $$ = ParameterListSemanticAction($1, $3); }
-	| parameter												{ $$ = ParameterListSingleSemanticAction($1); }
+	| parameter												{ $$ = SingleParameterSemanticAction($1); }
 	| 														{ $$ = NULL; }
 	;
 
@@ -119,12 +125,12 @@ parameter: type ID									{ $$ = ParameterSemanticAction($1, $2); }
 	;
 
 declarationList: declarationList declaration				{ $$ = DeclarationListSemanticAction($1, $2); }
-	| declaration 											{ $$ = DeclarationListSingleSemanticAction($1); }
+	| declaration 											{ $$ = SingleDeclarationSemanticAction($1); }
 	|														{ $$ = NULL; }
 	;
 
-declaration: type ID SEMICOLON							{ $$ = DeclarationSemanticAction($1, $2); }
-	| type ID ASSIGN expression SEMICOLON				{ $$ = DeclarationWithInitializationSemanticAction($1, $2, $4); }
+declaration: type ID SEMICOLON							{ $$ = VariableDeclarationSemanticAction($1, $2); }
+	| type ID ASSIGN expression SEMICOLON				{ $$ = AssignationDeclarationSemanticAction($1, $2, $4); }
 	| RETURN expression SEMICOLON						{ $$ = ReturnDeclarationSemanticAction($2); }
 	;
 
@@ -146,7 +152,5 @@ constant: INT											{ $$ = IntegerConstantSemanticAction($1); }
 
 type: INT												{ $$ = IntTypeSemanticAction($1); }
 	;
-
-
 
 %%
