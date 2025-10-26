@@ -54,22 +54,28 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    INTEGER = 258,                 /* INTEGER  */
-    ADD = 259,                     /* ADD  */
-    CLOSE_BRACE = 260,             /* CLOSE_BRACE  */
-    CLOSE_COMMENT = 261,           /* CLOSE_COMMENT  */
-    CLOSE_PARENTHESIS = 262,       /* CLOSE_PARENTHESIS  */
-    DIV = 263,                     /* DIV  */
-    MUL = 264,                     /* MUL  */
-    OPEN_BRACE = 265,              /* OPEN_BRACE  */
-    OPEN_COMMENT = 266,            /* OPEN_COMMENT  */
-    OPEN_PARENTHESIS = 267,        /* OPEN_PARENTHESIS  */
-    SUB = 268,                     /* SUB  */
-    INT = 269,                     /* INT  */
-    ID = 270,                      /* ID  */
-    SEMICOLON = 271,               /* SEMICOLON  */
-    IGNORED = 272,                 /* IGNORED  */
-    UNKNOWN = 273                  /* UNKNOWN  */
+    COMMA = 258,                   /* COMMA  */
+    INTEGER = 259,                 /* INTEGER  */
+    ADD = 260,                     /* ADD  */
+    CLOSE_BRACE = 261,             /* CLOSE_BRACE  */
+    CLOSE_COMMENT = 262,           /* CLOSE_COMMENT  */
+    CLOSE_PARENTHESIS = 263,       /* CLOSE_PARENTHESIS  */
+    DIV = 264,                     /* DIV  */
+    MUL = 265,                     /* MUL  */
+    OPEN_BRACE = 266,              /* OPEN_BRACE  */
+    OPEN_COMMENT = 267,            /* OPEN_COMMENT  */
+    OPEN_PARENTHESIS = 268,        /* OPEN_PARENTHESIS  */
+    SUB = 269,                     /* SUB  */
+    INT = 270,                     /* INT  */
+    BOOL = 271,                    /* BOOL  */
+    POINT = 272,                   /* POINT  */
+    DEFINE = 273,                  /* DEFINE  */
+    ID = 274,                      /* ID  */
+    SEMICOLON = 275,               /* SEMICOLON  */
+    ASSIGN = 276,                  /* ASSIGN  */
+    RETURN = 277,                  /* RETURN  */
+    IGNORED = 278,                 /* IGNORED  */
+    UNKNOWN = 279                  /* UNKNOWN  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -88,12 +94,18 @@ union SemanticValue
 
 	/** Non-terminals. */
 
+	FunctionDeclaration * functionDeclaration;
 	Constant * constant;
 	Expression * expression;
 	Factor * factor;
 	Program * program;
+	ParameterList * parameterList;
+	DeclarationList * declarationList;
+	Parameter * parameter;
+	Type * type;
+	Declaration * declaration;
 
-#line 97 "src/main/c/frontend/syntactic-analysis/BisonParser.h"
+#line 109 "src/main/c/frontend/syntactic-analysis/BisonParser.h"
 
 };
 #line 22 "src/main/c/frontend/syntactic-analysis/BisonGrammar.y"

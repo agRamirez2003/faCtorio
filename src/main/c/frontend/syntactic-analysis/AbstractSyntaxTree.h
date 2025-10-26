@@ -50,7 +50,8 @@ enum DeclarationType {
 enum FactorType {
 	CONSTANT,
 	EXPRESSION,
-	IDENTIFIER
+	IDENTIFIER,
+    INT_TYPE
 };
 
 struct FunctionDeclaration{
@@ -85,13 +86,13 @@ struct Declaration{
 		struct { // type ID; | int x;
 			Type* type;
 			char* id;
-		};
+		};/*
 
 		struct{ // type ID = expression; | int x = 10;
 			Type* type;
 			char* id;
 			Expression* expression;
-		};
+		};*/
 
 		struct { // RETURN expression; | return x + 1;
 			Expression* expression;
@@ -129,6 +130,7 @@ struct Expression {
 
 struct Program {
 	FunctionDeclaration * functionDeclaration;
+    Expression * expression;
 };
 
 /**

@@ -75,6 +75,9 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %token <token> OPEN_PARENTHESIS
 %token <token> SUB
 %token <token> INT
+%token <token> BOOL
+%token <token> POINT
+%token <token> DEFINE
 %token <token> ID
 %token <token> SEMICOLON
 %token <token> ASSIGN
@@ -111,7 +114,7 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 program: functionDeclaration								{ $$ = functionProgramSemanticAction($1); }
 	;
 
-functionDeclaration: type ID OPEN_PARENTHESIS parameterList CLOSE_PARENTHESIS OPEN_BRACE declarationList CLOSE_BRACE { $$ = functionDeclarationSemanticAction($1, $2, $4, $7); }
+functionDeclaration: type ID OPEN_PARENTHESIS parameterList CLOSE_PARENTHESIS OPEN_BRACE declarationList CLOSE_BRACE { $$ = FunctionDeclarationSemanticAction($1, $2, $4, $7); }
 	;	
 
 

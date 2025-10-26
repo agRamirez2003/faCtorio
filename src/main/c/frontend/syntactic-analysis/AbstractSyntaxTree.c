@@ -74,7 +74,7 @@ void destroyFunctionDeclaration(FunctionDeclaration * functionDeclaration) {
 	if (functionDeclaration != NULL) {
 		free(functionDeclaration->id);
 		destroyType(functionDeclaration->returnType);
-		destroyParameterList(functionDeclaration->parameters);
+		destroyParameterList(functionDeclaration->parameterList);
 		destroyDeclarationList(functionDeclaration->declarationList);
 		free(functionDeclaration);
 	}
