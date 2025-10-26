@@ -81,6 +81,9 @@ whitespace			[[:space:]]+
 .									{ return UnknownLexemeAction(); }
 
 "int"                               { return KeywordLexemeAction(INT); }
+"bool"                              { return KeywordLexemeAction(BOOL); }
+"point"                             { return KeywordLexemeAction(POINT); }
+"#DEFINE"                           { return DefineLexemeAction(); }
 [a-zA-Z_][a-zA-Z0-9_]*              { return IdentifierLexemeAction(); }
 ";"                                 { return SemicolonLexemeAction(); }
 

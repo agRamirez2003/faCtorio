@@ -143,6 +143,14 @@ CompilationStatus ParenthesisLexemeAction(TokenLabel label) {
 	return status;
 }
 
+CompilationStatus DefineLexemeAction() {
+    Token * token = createToken(_lexicalAnalyzer, DEFINE);
+    _logTokenAction(__FUNCTION__, token);
+    CompilationStatus status = pushToken(_lexicalAnalyzer, token);
+    destroyToken(token);
+    return status;
+}
+
 CompilationStatus SubexpressionLexemeAction() {
 	Token * token = createToken(_lexicalAnalyzer, IGNORED);
 	_inputBuffer = createInputBuffer(_lexicalAnalyzer, token->lexeme);

@@ -1,0 +1,5 @@
+#DEFINE fun(x, y){
+    int c;
+    c = x + y;
+    return c;
+}
