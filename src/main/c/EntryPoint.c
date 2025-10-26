@@ -34,7 +34,7 @@ const int main(const int length, const char ** arguments) {
 	CompilationStatus compilationStatus = executeSyntacticAnalysis();
 	Program * program = compilerState.abstractSyntaxtTree;
 	if (compilationStatus == SUCCEEDED) {
-		// ----------------------------------------------------------------------------------------
+		/* // ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
 		logDebugging(logger, "Computing expression value...");
 		ComputationResult computationResult = executeCalculator(&compilerState);
@@ -47,7 +47,7 @@ const int main(const int length, const char ** arguments) {
 			compilationStatus = FAILED;
 		}
 		// ...end of the Backend. -----------------------------------------------------------------
-		// ----------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------- */
 	}
 	else {
 		logError(logger, "The syntactic-analysis phase rejects the input program.");

@@ -31,10 +31,14 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 
 	/** Non-terminals. */
 
+	FunctionDeclaration * functionDeclaration;
 	Constant * constant;
 	Expression * expression;
 	Factor * factor;
 	Program * program;
+	ParameterList * parameterList;
+	DeclarationList * declarationList;
+	Parameter * parameter;
 }
 
 /**
@@ -50,6 +54,7 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %destructor { destroyFactor($$); } <factor>
 
 /** Terminals. */
+%token <token> COMMA
 %token <integer> INTEGER
 %token <token> ADD
 %token <token> CLOSE_BRACE
@@ -64,16 +69,21 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %token <token> INT
 %token <token> ID
 %token <token> SEMICOLON
+%token <token> RETURN_TYPE
 
 %token <token> IGNORED
 %token <token> UNKNOWN
 
 /** Non-terminals. */
+%type <functionDeclaration> functionDeclaration
 %type <constant> constant
 %type <expression> expression
 %type <factor> factor
 %type <program> program
 %type <program> declaration
+%type <parameterList> parameterList
+%type <declarationList> declarationList
+%type <parameter> parameter
 
 /**
  * Precedence and associativity.
@@ -88,8 +98,21 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 
-program: expression											{ $$ = ExpressionProgramSemanticAction($1); }
+program: functionDeclaration											{ $$ = functionDeclarationSemanticAction($1); }
 	;
+
+functionDeclaration: RETURN_TYPE ID OPEN_PARENTHESIS parameterList CLOSE_PARENTHESIS OPEN_BRACE declarationList CLOSE_BRACE { $$ = FunctionDeclarationSemanticAction($1, $2, $4, $7); }
+	;	
+
+parameterList: parameterList COMMA parameter				{ $$ = ParameterListSemanticAction($1, $3); }
+	| parameter												{ $$ = ParameterListSingleSemanticAction($1); }
+	| 														{ $$ = NULL; }
+	;
+
+parameter: RETURN_TYPE ID								{ $$ = ParameterSemanticAction($1, $2); }
+	;
+
+declarationList: declarationList declaration			{ $$ = DeclarationListSemanticAction($1, $2); }
 
 expression: expression[left] ADD expression[right]			{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
 	| expression[left] DIV expression[right]				{ $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }
