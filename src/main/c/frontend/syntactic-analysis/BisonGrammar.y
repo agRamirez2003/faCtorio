@@ -28,6 +28,7 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 
 	signed int integer;
 	TokenLabel token;
+	char* string;
 
 	/** Non-terminals. */
 
@@ -78,7 +79,7 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %token <token> BOOL
 %token <token> POINT
 %token <token> DEFINE
-%token <token> ID
+%token <string> ID
 %token <token> SEMICOLON
 %token <token> ASSIGN
 %token <token> RETURN
@@ -124,7 +125,7 @@ parameterList: parameterList COMMA parameter				{ $$ = ParameterListSemanticActi
 	| 														{ $$ = NULL; }
 	;
 
-parameter: type ID									{ $$ = ParameterSemanticAction($1, $2); }
+parameter: type ID											{ $$ = ParameterSemanticAction($1, $2); }
 	;
 
 declarationList: declarationList declaration				{ $$ = DeclarationListSemanticAction($1, $2); }

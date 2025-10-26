@@ -15,12 +15,10 @@
  */
 
 extern CompilationStatus ArithmeticOperatorLexemeAction(TokenLabel label);
-extern CompilationStatus EnterImportExpressionLexemeAction(FlexContext context);
 extern CompilationStatus EnterMultilineCommentLexemeAction(FlexContext context);
 extern CompilationStatus EOFLexemeAction();
 extern CompilationStatus IgnoredLexemeAction();
 extern CompilationStatus IntegerLexemeAction();
-extern CompilationStatus LeaveImportExpressionLexemeAction();
 extern CompilationStatus LeaveMultilineCommentLexemeAction();
 extern CompilationStatus ParenthesisLexemeAction(TokenLabel label);
 extern CompilationStatus SubexpressionLexemeAction();
@@ -28,6 +26,10 @@ extern CompilationStatus UnknownLexemeAction();
 extern CompilationStatus KeywordLexemeAction();
 extern CompilationStatus IdentifierLexemeAction();
 extern CompilationStatus SemicolonLexemeAction();
+extern CompilationStatus CommaLexemeAction();
+extern CompilationStatus DefineLexemeAction();
+extern CompilationStatus EnterDeclarationBlockLexemeAction(FlexContext context);
+extern CompilationStatus LeaveDeclarationBlockLexemeAction();
 
 %}
 
@@ -36,7 +38,7 @@ extern CompilationStatus SemicolonLexemeAction();
  *
  * @see https://westes.github.io/flex/manual/Start-Conditions.html
  */
-%x IMPORT_EXPRESSION
+%x DECLARATION_BLOCK
 %x MULTILINE_COMMENT
 
 /**
@@ -57,35 +59,43 @@ whitespace			[[:space:]]+
 
 %}
 
-"{"									{ return EnterImportExpressionLexemeAction(IMPORT_EXPRESSION); }
-<IMPORT_EXPRESSION>[^{}]+			{ return SubexpressionLexemeAction(); }
-<IMPORT_EXPRESSION>"}"				{ return LeaveImportExpressionLexemeAction(); }
-<IMPORT_EXPRESSION>.				{ return UnknownLexemeAction(); }
+"{"									                    { return EnterDeclarationBlockLexemeAction(DECLARATION_BLOCK); }
+<DECLARATION_BLOCK>"int"                                { return KeywordLexemeAction(INT); }
+<DECLARATION_BLOCK>[a-zA-Z_][a-zA-Z0-9_]*               { return IdentifierLexemeAction(); }
+<DECLARATION_BLOCK>"}"				                    { return LeaveDeclarationBlockLexemeAction(); }
+<DECLARATION_BLOCK>"-"									{ return ArithmeticOperatorLexemeAction(SUB); }
+<DECLARATION_BLOCK>"*"									{ return ArithmeticOperatorLexemeAction(MUL); }
+<DECLARATION_BLOCK>"/"									{ return ArithmeticOperatorLexemeAction(DIV); }
+<DECLARATION_BLOCK>"+"									{ return ArithmeticOperatorLexemeAction(ADD); }
+<DECLARATION_BLOCK>";"                                  { return SemicolonLexemeAction(); }
+<DECLARATION_BLOCK>{whitespace}						    { return IgnoredLexemeAction(); }
+<DECLARATION_BLOCK>.				                    { return UnknownLexemeAction(); }
 
 "/*"								{ return EnterMultilineCommentLexemeAction(MULTILINE_COMMENT); }
 <MULTILINE_COMMENT>"*/"				{ return LeaveMultilineCommentLexemeAction(); }
 <MULTILINE_COMMENT>[^*]+			{ return IgnoredLexemeAction(); }
 <MULTILINE_COMMENT>.				{ return IgnoredLexemeAction(); }
 
-"-"									{ return ArithmeticOperatorLexemeAction(SUB); }
-"*"									{ return ArithmeticOperatorLexemeAction(MUL); }
-"/"									{ return ArithmeticOperatorLexemeAction(DIV); }
-"+"									{ return ArithmeticOperatorLexemeAction(ADD); }
+
 
 "("									{ return ParenthesisLexemeAction(OPEN_PARENTHESIS); }
 ")"									{ return ParenthesisLexemeAction(CLOSE_PARENTHESIS); }
 
+","                                 { return CommaLexemeAction(); }
+
 [[:digit:]]+						{ return IntegerLexemeAction(); }
 
-{whitespace}						{ return IgnoredLexemeAction(); }
-.									{ return UnknownLexemeAction(); }
 
 "int"                               { return KeywordLexemeAction(INT); }
 "bool"                              { return KeywordLexemeAction(BOOL); }
 "point"                             { return KeywordLexemeAction(POINT); }
 "#DEFINE"                           { return DefineLexemeAction(); }
 [a-zA-Z_][a-zA-Z0-9_]*              { return IdentifierLexemeAction(); }
-";"                                 { return SemicolonLexemeAction(); }
+
+
+
+{whitespace}						{ return IgnoredLexemeAction(); }
+.									{ return UnknownLexemeAction(); }
 
 <<EOF>>								{ return EOFLexemeAction(); }
 

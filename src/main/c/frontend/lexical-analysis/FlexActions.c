@@ -60,12 +60,11 @@ CompilationStatus ArithmeticOperatorLexemeAction(TokenLabel label) {
 	return status;
 }
 
-CompilationStatus EnterImportExpressionLexemeAction(FlexContext context) {
-	if (_logIgnoredLexemes) {
-		Token * token = createToken(_lexicalAnalyzer, OPEN_BRACE);
-		_logTokenAction(__FUNCTION__, token);
-		destroyToken(token);
-	}
+CompilationStatus EnterDeclarationBlockLexemeAction(FlexContext context) {
+	Token * token = createToken(_lexicalAnalyzer, OPEN_BRACE);
+	_logTokenAction(__FUNCTION__, token);
+	CompilationStatus status = pushToken(_lexicalAnalyzer, token);
+	destroyToken(token);
 	enterLexicalAnalyzerContext(_lexicalAnalyzer, context);
 	return IN_PROGRESS;
 }
@@ -114,14 +113,13 @@ CompilationStatus IntegerLexemeAction() {
 	return status;
 }
 
-CompilationStatus LeaveImportExpressionLexemeAction() {
-	pushInputBuffer(_inputBuffer);
+CompilationStatus LeaveDeclarationBlockLexemeAction() {
 	leaveLexicalAnalyzerContext(_lexicalAnalyzer);
-	if (_logIgnoredLexemes) {
-		Token * token = createToken(_lexicalAnalyzer, CLOSE_BRACE);
-		_logTokenAction(__FUNCTION__, token);
-		destroyToken(token);
-	}
+	Token * token = createToken(_lexicalAnalyzer, CLOSE_BRACE);
+	_logTokenAction(__FUNCTION__, token);
+	CompilationStatus status = pushToken(_lexicalAnalyzer, token);
+	destroyToken(token);
+	
 	return IN_PROGRESS;
 }
 
@@ -179,6 +177,7 @@ CompilationStatus KeywordLexemeAction(TokenLabel label) {
 
 CompilationStatus IdentifierLexemeAction() {
     Token * token = createToken(_lexicalAnalyzer, ID);
+	token->semanticValue->string = strdup(token->lexeme);
     _logTokenAction(__FUNCTION__, token);
     CompilationStatus status = pushToken(_lexicalAnalyzer, token);
     destroyToken(token);
@@ -191,4 +190,12 @@ CompilationStatus SemicolonLexemeAction() {
     CompilationStatus status = pushToken(_lexicalAnalyzer, token);
     destroyToken(token);
     return status;
+}
+
+CompilationStatus CommaLexemeAction() {
+	Token * token = createToken(_lexicalAnalyzer, COMMA);
+	_logTokenAction(__FUNCTION__, token);
+	CompilationStatus status = pushToken(_lexicalAnalyzer, token);
+	destroyToken(token);
+	return status;
 }
