@@ -22,7 +22,15 @@ Expression * FactorExpressionSemanticAction(Factor * factor);
 Factor * ConstantFactorSemanticAction(Constant * constant);
 Factor * ExpressionFactorSemanticAction(Expression * expression);
 Factor * IdentifierFactorSemanticAction(char * id);
-Program * functionProgramSemanticAction(FunctionDeclaration * functionDeclaration);
+Program * DeclarationProgramSemanticAction(GlobalDeclarationList * globalDeclarationList);
+GlobalDeclarationList* GlobalDeclarationListSemanticAction(GlobalDeclarationList* globalDeclarationList, GlobalDeclaration* globalDeclaration);
+GlobalDeclarationList* SingleGlobalDeclarationSemanticAction(GlobalDeclaration* globalDeclaration);
+GlobalDeclaration * GlobalFunctionDeclarationSemanticAction(FunctionDeclaration * functionDeclaration);
+GlobalDeclaration * GlobalDefineDeclarationSemanticAction(DefineDeclaration * defineDeclaration);
+DefineDeclaration* DefineDeclarationSemanticAction(char* id, DefineParameterList* parameterList, DeclarationList* declarationList);
+DefineParameterList * DefineParameterListSemanticAction(DefineParameterList* parameterList, DefineParameter* parameter);
+DefineParameterList* SingleDefineParameterSemanticAction(DefineParameter* parameter);
+DefineParameter* DefineParameterSemanticAction(char* id);
 FunctionDeclaration* FunctionDeclarationSemanticAction(Type* type, char* id, ParameterList* parameters, DeclarationList* declarationList);
 ParameterList* ParameterListSemanticAction(ParameterList* parameterList, Parameter* parameter);
 ParameterList* SingleParameterSemanticAction(Parameter* parameter);
@@ -34,7 +42,7 @@ Declaration* AssignationDeclarationSemanticAction(Type* type, char* id, Expressi
 Declaration* ReturnDeclarationSemanticAction(Expression* expression);
 Type * IntTypeSemanticAction(TokenLabel token);
 
-Program *DeclarationProgramSemanticAction();
+/* Program *DeclarationProgramSemanticAction(); */
 void *SimpleDeclarationSemanticAction();
 
 #endif

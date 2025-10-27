@@ -42,6 +42,11 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 	Parameter * parameter;
 	Type * type;
 	Declaration * declaration;
+	GlobalDeclarationList * globalDeclarationList;
+	GlobalDeclaration * globalDeclaration;
+	DefineDeclaration * defineDeclaration;
+	DefineParameterList * defineParameterList;
+	DefineParameter * defineParameter;
 }
 
 /**
@@ -61,6 +66,11 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %destructor { destroyDeclaration($$); } <declaration>
 %destructor { destroyDeclarationList($$); } <declarationList>
 %destructor { destroyFunctionDeclaration($$); } <functionDeclaration>
+%destructor { destroyGlobalDeclaration($$); } <globalDeclaration>
+%destructor { destroyGlobalDeclarationList($$); } <globalDeclarationList>
+%destructor { destroyDefineDeclaration($$); } <defineDeclaration>
+%destructor { destroyDefineParameter($$); } <defineParameter>
+%destructor { destroyDefineParameterList($$); } <defineParameterList>
 
 /** Terminals. */
 %token <token> COMMA
@@ -98,6 +108,11 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %type <declarationList> declarationList
 %type <parameter> parameter
 %type <type> type
+%type <globalDeclarationList> globalDeclarationList
+%type <globalDeclaration> globalDeclaration
+%type <defineDeclaration> defineDeclaration
+%type <defineParameterList> defineParameterList
+%type <defineParameter> defineParameter
 
 /**
  * Precedence and associativity.
@@ -112,7 +127,27 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 
-program: functionDeclaration								{ $$ = functionProgramSemanticAction($1); }
+program: globalDeclarationList 										{ $$ = DeclarationProgramSemanticAction($1); }	
+	;
+
+
+globalDeclarationList:globalDeclarationList globalDeclaration								{ $$ = GlobalDeclarationListSemanticAction($1, $2); }
+	| globalDeclaration																		{ $$ = SingleGlobalDeclarationSemanticAction($1); }
+	;
+
+globalDeclaration: functionDeclaration									    { $$ = GlobalFunctionDeclarationSemanticAction($1); }
+	| defineDeclaration												        { $$ = GlobalDefineDeclarationSemanticAction($1); }
+	;
+
+defineDeclaration: DEFINE ID OPEN_PARENTHESIS defineParameterList CLOSE_PARENTHESIS OPEN_BRACE declarationList CLOSE_BRACE	{ $$ = DefineDeclarationSemanticAction($2, $4, $7); }
+	;
+
+defineParameterList: defineParameterList COMMA defineParameter				{ $$ = DefineParameterListSemanticAction($1, $3); }
+	| defineParameter											            { $$ = SingleDefineParameterSemanticAction($1); }
+	| 														                { $$ = NULL; }
+	;
+
+defineParameter: ID										                            { $$ = DefineParameterSemanticAction($1); }
 	;
 
 functionDeclaration: type ID OPEN_PARENTHESIS parameterList CLOSE_PARENTHESIS OPEN_BRACE declarationList CLOSE_BRACE { $$ = FunctionDeclarationSemanticAction($1, $2, $4, $7); }
@@ -135,6 +170,7 @@ declarationList: declarationList declaration				{ $$ = DeclarationListSemanticAc
 
 declaration: type ID SEMICOLON							    { $$ = VariableDeclarationSemanticAction($1, $2); }
 	| type ID EQUALS expression SEMICOLON				    { $$ = AssignationDeclarationSemanticAction($1, $2, $4); }
+	| ID EQUALS expression SEMICOLON					    { $$ = AssignationDeclarationSemanticAction(NULL, $1, $3); }
 	| RETURN expression SEMICOLON						    { $$ = ReturnDeclarationSemanticAction($2); }
 	;
 

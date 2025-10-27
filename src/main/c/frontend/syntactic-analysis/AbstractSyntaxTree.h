@@ -17,6 +17,7 @@ ModuleDestructor initializeAbstractSyntaxTreeModule();
 typedef enum ExpressionType ExpressionType;
 typedef enum FactorType FactorType;
 typedef enum DeclarationType DeclarationType;
+typedef enum GlobalDeclarationType GlobalDeclarationType;
 
 typedef struct Constant Constant;
 typedef struct Expression Expression;
@@ -28,6 +29,11 @@ typedef struct ParameterList ParameterList;
 typedef struct Parameter Parameter;
 typedef struct DeclarationList DeclarationList;
 typedef struct Declaration Declaration;
+typedef struct GlobalDeclaration GlobalDeclaration;
+typedef struct GlobalDeclarationList GlobalDeclarationList;
+typedef struct DefineDeclaration DefineDeclaration;
+typedef struct DefineParameter DefineParameter;
+typedef struct DefineParameterList DefineParameterList;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -39,6 +45,11 @@ enum ExpressionType {
 	FACTOR,
 	MULTIPLICATION,
 	SUBTRACTION,
+};
+
+enum GlobalDeclarationType {
+	FUNCTION_DECLARATION,
+	DEFINE_DECLARATION
 };
 
 enum DeclarationType {
@@ -53,6 +64,36 @@ enum FactorType {
 	IDENTIFIER,
     INT_TYPE
 };
+
+struct GlobalDeclarationList{
+	GlobalDeclaration* head;
+};
+
+struct GlobalDeclaration{
+	union {
+		FunctionDeclaration * functionDeclaration;
+		DefineDeclaration * defineDeclaration;
+	};
+	GlobalDeclarationType type;
+	GlobalDeclaration* next;
+};
+
+struct DefineDeclaration{
+	char* id;
+	DefineParameterList* parameterList;
+	DeclarationList* declarationList;
+};
+
+struct DefineParameterList{
+	DefineParameter* head;
+};
+
+struct DefineParameter{
+	char* id;
+	DefineParameter* next;
+};
+
+
 
 struct FunctionDeclaration{
 	char* id;
@@ -129,8 +170,8 @@ struct Expression {
 };
 
 struct Program {
-	FunctionDeclaration * functionDeclaration;
-    Expression * expression;
+	GlobalDeclarationList * globalDeclarationList;
+	Expression* expression;
 };
 
 /**
@@ -147,5 +188,10 @@ void destroyParameterList(ParameterList * parameterList);
 void destroyParameter(Parameter * parameter);
 void destroyDeclarationList(DeclarationList * declarationList);
 void destroyDeclaration(Declaration * declaration);
+void destroyGlobalDeclarationList(GlobalDeclarationList * globalDeclarationList);
+void destroyGlobalDeclaration(GlobalDeclaration * globalDeclaration);
+void destroyDefineDeclaration(DefineDeclaration * defineDeclaration);
+void destroyDefineParameterList(DefineParameterList * defineParameterList);
+void destroyDefineParameter(DefineParameter * defineParameter);
 
 #endif

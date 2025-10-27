@@ -28,22 +28,35 @@ void destroyConstant(Constant * constant) {
 }
 
 void destroyExpression(Expression * expression) {
-	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (expression != NULL) {
-		switch (expression->type) {
-			case ADDITION:
-			case DIVISION:
-			case MULTIPLICATION:
-			case SUBTRACTION:
-				destroyExpression(expression->leftExpression);
-				destroyExpression(expression->rightExpression);
-				break;
-			case FACTOR:
-				destroyFactor(expression->factor);
-				break;
-		}
-		free(expression);
-	}
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if (expression != NULL) {
+        logDebugging(_logger, "Executing destructor not null: %s", __FUNCTION__);
+        //        destroyFactor(expression->factor);
+        //logDebugging(_logger, "Executing destructor not nulllllll: %s", FUNCTION);
+        //        return ;
+        switch (expression->type) {
+            case ADDITION:
+            case DIVISION:
+            case MULTIPLICATION:
+            case SUBTRACTION:
+                logDebugging(_logger, "Executing destructor arithmetic: %s", __FUNCTION__);
+                destroyExpression(expression->leftExpression);
+                destroyExpression(expression->rightExpression);
+                break;
+            case FACTOR:
+                logDebugging(_logger, "Executing destructor factor: %s", __FUNCTION__);
+                destroyFactor(expression->factor);
+                break;
+            default:
+                logDebugging(_logger, "Unknown ExpressionType in destructor: %s", __FUNCTION__);
+                break;
+        }
+        logDebugging(_logger, "Freeing expression memory: %s", __FUNCTION__);
+        free(expression);
+    }
+    else{
+        logDebugging(_logger, "Executing destructor null: %s", __FUNCTION__);
+    }
 }
 
 void destroyFactor(Factor * factor) {
@@ -67,7 +80,7 @@ void destroyFactor(Factor * factor) {
 void destroyProgram(Program * program) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (program != NULL) {
-		destroyFunctionDeclaration(program->functionDeclaration);
+		destroyGlobalDeclarationList(program->globalDeclarationList);
 		free(program);
 	}
 }
@@ -125,23 +138,82 @@ void destroyDeclarationList(DeclarationList * declarationList) {
 	}
 }
 
-void destroyDeclaration(Declaration * declaration) {
+void destroyGlobalDeclarationList(GlobalDeclarationList * globalDeclarationList) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (declaration != NULL) {
-		switch (declaration->declarationType) {
-			case VAR_DECLARATION:
-				free(declaration->id);
-				destroyType(declaration->type);
+	if (globalDeclarationList != NULL) {
+		GlobalDeclaration * currentGlobalDeclaration = globalDeclarationList->head;
+		while (currentGlobalDeclaration != NULL) {
+			GlobalDeclaration * nextGlobalDeclaration = currentGlobalDeclaration->next;
+			destroyGlobalDeclaration(currentGlobalDeclaration);
+			currentGlobalDeclaration = nextGlobalDeclaration;
+		}
+		free(globalDeclarationList);
+	}
+}
+
+void destroyGlobalDeclaration(GlobalDeclaration * globalDeclaration) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (globalDeclaration != NULL) {
+		switch (globalDeclaration->type) {
+			case FUNCTION_DECLARATION:
+				destroyFunctionDeclaration(globalDeclaration->functionDeclaration);
 				break;
-			case ASSIGNATTION:
-				free(declaration->id);
-				destroyType(declaration->type);
-				destroyExpression(declaration->expression);
-				break;
-			case RETURN_STATEMENT:
-				destroyExpression(declaration->expression);
+			case DEFINE_DECLARATION:
+				destroyDefineDeclaration(globalDeclaration->defineDeclaration);
 				break;
 		}
-		free(declaration);
+		free(globalDeclaration);
 	}
+}
+
+void destroyDefineDeclaration(DefineDeclaration * defineDeclaration) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (defineDeclaration != NULL) {
+		free(defineDeclaration->id);
+		destroyDefineParameterList(defineDeclaration->parameterList);
+		destroyDeclarationList(defineDeclaration->declarationList);
+		free(defineDeclaration);
+	}
+}
+
+void destroyDefineParameterList(DefineParameterList * defineParameterList) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (defineParameterList != NULL) {
+		DefineParameter * currentParameter = defineParameterList->head;
+		while (currentParameter != NULL) {
+			DefineParameter * nextParameter = currentParameter->next;
+			destroyDefineParameter(currentParameter);
+			currentParameter = nextParameter;
+		}
+		free(defineParameterList);
+	}
+}
+
+void destroyDefineParameter(DefineParameter * defineParameter) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (defineParameter != NULL) {
+		free(defineParameter->id);
+		free(defineParameter);
+	}
+}
+
+void destroyDeclaration(Declaration * declaration) {
+    logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    if (declaration != NULL) {
+        switch (declaration->declarationType) {
+            case VAR_DECLARATION:
+                free(declaration->id);
+                destroyType(declaration->type);
+                break;
+            case ASSIGNATTION:
+                free(declaration->id);
+                //destroyType(declaration->type);
+                destroyExpression(declaration->expression);
+                break;
+            case RETURN_STATEMENT:
+                destroyExpression(declaration->expression);
+                break;
+        }
+        free(declaration);
+    }
 }

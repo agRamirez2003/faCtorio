@@ -68,7 +68,7 @@ Expression * FactorExpressionSemanticAction(Factor * factor) {
 
 Factor * IdentifierFactorSemanticAction(char * id) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Factor * factor = calloc(1, sizeof(Expression));
+	Factor * factor = calloc(1, sizeof(Factor));
 	factor->id = id;
 	factor->type = IDENTIFIER;
 	return factor;
@@ -90,13 +90,80 @@ Factor * ExpressionFactorSemanticAction(Expression * expression) {
 	return factor;
 }
 
-Program * functionProgramSemanticAction(FunctionDeclaration * functionDeclaration) {
+GlobalDeclarationList* GlobalDeclarationListSemanticAction(GlobalDeclarationList* globalDeclarationList, GlobalDeclaration* globalDeclaration) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	GlobalDeclaration *it = globalDeclarationList->head;
+	while (it->next) {
+		it = it->next;
+	}
+	it->next = globalDeclaration;
+	return globalDeclarationList;
+}
+
+GlobalDeclarationList* SingleGlobalDeclarationSemanticAction(GlobalDeclaration* globalDeclaration) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	GlobalDeclarationList* globalDeclarationList = calloc(1, sizeof(GlobalDeclarationList));
+	globalDeclarationList->head = globalDeclaration;
+	return globalDeclarationList;
+}
+
+Program* DeclarationProgramSemanticAction(GlobalDeclarationList* globalDeclarationList) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Program * program = calloc(1, sizeof(Program));
-	program->functionDeclaration = functionDeclaration;
-	_compilerState->abstractSyntaxtTree = program;
+	program->globalDeclarationList = globalDeclarationList;
+	_compilerState->abstractSyntaxtTree = program; 
 	return program;
 }
+
+GlobalDeclaration * GlobalFunctionDeclarationSemanticAction(FunctionDeclaration * functionDeclaration) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	GlobalDeclaration * globalDeclaration = calloc(1, sizeof(GlobalDeclaration));
+	globalDeclaration->functionDeclaration = functionDeclaration;
+	globalDeclaration->type = FUNCTION_DECLARATION;
+	return globalDeclaration;
+}
+
+GlobalDeclaration * GlobalDefineDeclarationSemanticAction(DefineDeclaration * defineDeclaration) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	GlobalDeclaration * globalDeclaration = calloc(1, sizeof(GlobalDeclaration));
+	globalDeclaration->defineDeclaration = defineDeclaration;
+	globalDeclaration->type = DEFINE_DECLARATION;
+	return globalDeclaration;
+}
+
+DefineDeclaration* DefineDeclarationSemanticAction(char* id, DefineParameterList* parameterList, DeclarationList* declarationList) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	DefineDeclaration* defineDeclaration = calloc(1, sizeof(DefineDeclaration));
+	defineDeclaration->id = id;
+	defineDeclaration->parameterList = parameterList;
+	defineDeclaration->declarationList = declarationList;
+	return defineDeclaration;
+}
+DefineParameterList * DefineParameterListSemanticAction(DefineParameterList* parameterList, DefineParameter* parameter) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	DefineParameter *it = parameterList->head;
+	while (it->next) {
+		it = it->next;
+	}
+	it->next = parameter;
+	return parameterList;
+}
+
+DefineParameterList* SingleDefineParameterSemanticAction(DefineParameter* parameter) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	DefineParameterList* parameterList = calloc(1, sizeof(DefineParameterList));
+	parameterList->head = parameter;
+	return parameterList;
+}
+
+DefineParameter* DefineParameterSemanticAction(char* id) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	DefineParameter* parameter = calloc(1, sizeof(DefineParameter));
+	parameter->id = id;
+	parameter->next = NULL;
+	return parameter;
+}
+
 
 FunctionDeclaration* FunctionDeclarationSemanticAction(Type* type, char* id, ParameterList* parameterList, DeclarationList* declarationList) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
@@ -108,7 +175,6 @@ FunctionDeclaration* FunctionDeclarationSemanticAction(Type* type, char* id, Par
 	return functionDeclaration;
 }
 
-//Puede fallar
 ParameterList* ParameterListSemanticAction(ParameterList* parameterList, Parameter* parameter) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Parameter *it = parameterList->head;
@@ -145,10 +211,10 @@ DeclarationList* DeclarationListSemanticAction(DeclarationList* declarationList,
 	return declarationList;
 }
 
-DeclarationList* SingleDeclarationSemanticAction(Declaration* declaration) {
+DeclarationList* SingleDeclarationSemanticAction(Declaration* Declaration) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	DeclarationList* declarationList = calloc(1, sizeof(DeclarationList));
-	declarationList->head = declaration;
+	declarationList->head = Declaration;
 	return declarationList;
 }
 
@@ -181,11 +247,11 @@ Declaration* ReturnDeclarationSemanticAction(Expression* expression) {
 	declaration->next = NULL;
 	return declaration;
 }
-
+/* 
 Program *DeclarationProgramSemanticAction() {
     _logSyntacticAnalyzerAction(__FUNCTION__);
     return NULL;  // más adelante devolverá un nodo del AST
-}
+} */
 
 void *SimpleDeclarationSemanticAction() {
     _logSyntacticAnalyzerAction(__FUNCTION__);
@@ -195,7 +261,8 @@ void *SimpleDeclarationSemanticAction() {
 Type * IntTypeSemanticAction(TokenLabel token) {
     _logSyntacticAnalyzerAction(__FUNCTION__);
 
-    Type * type = calloc(1, sizeof(Type));
-    type->type = INT_TYPE;   // o el valor correspondiente en tu enum de tipos
-    return type;
+    //Type * type = calloc(1, sizeof(Type));
+    //type->type = INT_TYPE;   // o el valor correspondiente en tu enum de tipos
+    //return type;
+    return NULL;
 }
