@@ -6,4 +6,5 @@
 
 int main(int argc, int argv){
     int a;
+    a = fun(2, 3);
 }
