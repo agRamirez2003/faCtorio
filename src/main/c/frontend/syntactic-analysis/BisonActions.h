@@ -19,6 +19,7 @@ ModuleDestructor initializeBisonActionsModule();
 Constant * IntegerConstantSemanticAction(const int value);
 Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type);
 Expression * FactorExpressionSemanticAction(Factor * factor);
+Expression * DefineCallExpressionSemanticAction(DefineCall* definecall);
 Factor * ConstantFactorSemanticAction(Constant * constant);
 Factor * ExpressionFactorSemanticAction(Expression * expression);
 Factor * IdentifierFactorSemanticAction(char * id);
@@ -40,6 +41,11 @@ DeclarationList* SingleDeclarationSemanticAction(Declaration* declaration);
 Declaration* VariableDeclarationSemanticAction(Type* type, char* id);
 Declaration* AssignationDeclarationSemanticAction(Type* type, char* id, Expression* expression);
 Declaration* ReturnDeclarationSemanticAction(Expression* expression);
+Declaration* DefineCallDeclarationSemanticAction(DefineCall* definecall);
+DefineCall* DefineCallSemanticAction(char* id, ArgumentList* argumentList);
+ArgumentList* ArgumentListSemanticAction(ArgumentList* argumentList, Argument* argument);
+ArgumentList* SingleArgumentSemanticAction(Argument* argument);
+Argument* ArgumentSemanticAction(Expression* expression);
 Type * IntTypeSemanticAction(TokenLabel token);
 
 /* Program *DeclarationProgramSemanticAction(); */

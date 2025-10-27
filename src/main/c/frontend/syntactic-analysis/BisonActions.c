@@ -247,6 +247,55 @@ Declaration* ReturnDeclarationSemanticAction(Expression* expression) {
 	declaration->next = NULL;
 	return declaration;
 }
+Declaration* DefineCallDeclarationSemanticAction(DefineCall* definecall) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Declaration* declaration = calloc(1, sizeof(Declaration));
+	declaration->definecall = definecall;
+	declaration->declarationType = DEFINE_CALL_DECLARATION;
+	declaration->next = NULL;
+	return declaration;
+}
+
+Expression * DefineCallExpressionSemanticAction(DefineCall* definecall) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Expression * expression = calloc(1, sizeof(Expression));
+	expression->definecall = definecall;
+	expression->type = DEFINE_CALL;
+	return expression;
+}
+
+DefineCall* DefineCallSemanticAction(char* id, ArgumentList* argumentList) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	DefineCall* definecall = calloc(1, sizeof(DefineCall));
+	definecall->id = id;
+	definecall->argumentList =argumentList;
+	return definecall;
+}
+
+ArgumentList* ArgumentListSemanticAction(ArgumentList* argumentList, Argument* argument) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Argument *it = argumentList->head;
+	while (it->next) {
+		it = it->next;
+	}
+	it->next = argument;
+	return argumentList;
+}
+
+ArgumentList* SingleArgumentSemanticAction(Argument* argument) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ArgumentList* argumentList = calloc(1, sizeof(ArgumentList));
+	argumentList->head = argument;
+	return argumentList;
+}
+
+Argument* ArgumentSemanticAction(Expression* expression) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Argument* argument = calloc(1, sizeof(Argument));
+	argument->expression = expression;
+	argument->next = NULL;
+	return argument;
+}
 /* 
 Program *DeclarationProgramSemanticAction() {
     _logSyntacticAnalyzerAction(__FUNCTION__);

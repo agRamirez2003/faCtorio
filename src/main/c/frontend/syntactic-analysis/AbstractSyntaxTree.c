@@ -47,6 +47,10 @@ void destroyExpression(Expression * expression) {
                 logDebugging(_logger, "Executing destructor factor: %s", __FUNCTION__);
                 destroyFactor(expression->factor);
                 break;
+			case DEFINE_CALL:
+				logDebugging(_logger, "Executing destructor define call: %s", __FUNCTION__);
+				destroyDefineCall(expression->definecall);
+				break;
             default:
                 logDebugging(_logger, "Unknown ExpressionType in destructor: %s", __FUNCTION__);
                 break;
@@ -213,7 +217,40 @@ void destroyDeclaration(Declaration * declaration) {
             case RETURN_STATEMENT:
                 destroyExpression(declaration->expression);
                 break;
+			case DEFINE_CALL_DECLARATION:
+				destroyDefineCall(declaration->definecall);
+				break;
         }
         free(declaration);
     }
+}
+
+void destroyDefineCall(DefineCall* definecall){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if(definecall != NULL){
+		free(definecall->id);
+		destroyArgumentList(definecall->argumentList);
+		free(definecall);
+	}
+}
+
+void destroyArgumentList(ArgumentList* argumentList){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if(argumentList != NULL){
+		Argument* currentArgument = argumentList->head;
+		while(currentArgument != NULL){
+			Argument* nextArgument = currentArgument->next;
+			destroyArgument(currentArgument);
+			currentArgument = nextArgument;
+		}
+		free(argumentList);
+	}
+}
+
+void destroyArgument(Argument* argument){
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if(argument != NULL){
+		destroyExpression(argument->expression);
+		free(argument);
+	}
 }

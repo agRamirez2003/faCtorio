@@ -65,13 +65,16 @@ whitespace			[[:space:]]+
 <DECLARATION_BLOCK>"return"                             { return KeywordLexemeAction(RETURN); }
 <DECLARATION_BLOCK>[a-zA-Z_][a-zA-Z0-9_]*               { return IdentifierLexemeAction(); }
 <DECLARATION_BLOCK>[[:digit:]]+						    { return IntegerLexemeAction(); }
+<DECLARATION_BLOCK>"("									{ return ParenthesisLexemeAction(OPEN_PARENTHESIS); }
+<DECLARATION_BLOCK>")"									{ return ParenthesisLexemeAction(CLOSE_PARENTHESIS); }
 <DECLARATION_BLOCK>"}"				                    { return LeaveDeclarationBlockLexemeAction(); }
 <DECLARATION_BLOCK>"-"									{ return ArithmeticOperatorLexemeAction(SUB); }
 <DECLARATION_BLOCK>"*"									{ return ArithmeticOperatorLexemeAction(MUL); }
 <DECLARATION_BLOCK>"/"									{ return ArithmeticOperatorLexemeAction(DIV); }
 <DECLARATION_BLOCK>"+"									{ return ArithmeticOperatorLexemeAction(ADD); }
 <DECLARATION_BLOCK>";"                                  { return SemicolonLexemeAction(); }
-<DECLARATION_BLOCK>"="                                  { return EqualsLexemeAction(); }                
+<DECLARATION_BLOCK>"="                                  { return EqualsLexemeAction(); }    
+<DECLARATION_BLOCK>","                                  { return CommaLexemeAction(); }            
 <DECLARATION_BLOCK>{whitespace}						    { return IgnoredLexemeAction(); }
 <DECLARATION_BLOCK>.				                    { return UnknownLexemeAction(); }
 

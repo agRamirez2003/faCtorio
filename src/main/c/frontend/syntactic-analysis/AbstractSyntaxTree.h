@@ -34,6 +34,9 @@ typedef struct GlobalDeclarationList GlobalDeclarationList;
 typedef struct DefineDeclaration DefineDeclaration;
 typedef struct DefineParameter DefineParameter;
 typedef struct DefineParameterList DefineParameterList;
+typedef struct DefineCall DefineCall;
+typedef struct ArgumentList ArgumentList;
+typedef struct Argument Argument;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -45,6 +48,7 @@ enum ExpressionType {
 	FACTOR,
 	MULTIPLICATION,
 	SUBTRACTION,
+	DEFINE_CALL
 };
 
 enum GlobalDeclarationType {
@@ -55,7 +59,8 @@ enum GlobalDeclarationType {
 enum DeclarationType {
 	VAR_DECLARATION,
 	ASSIGNATTION,
-	RETURN_STATEMENT
+	RETURN_STATEMENT,
+	DEFINE_CALL_DECLARATION
 };
 
 enum FactorType {
@@ -116,6 +121,16 @@ struct Parameter{
 	Parameter* next;
 };
 
+struct ArgumentList{
+	Argument* head;
+};
+
+struct Argument{
+	Expression* expression;
+	Argument* next;
+};
+
+
 struct DeclarationList{
 	Declaration* head;
 };
@@ -139,11 +154,17 @@ struct Declaration{
 			Expression* expression;
 		};
 		
-		
+		DefineCall* definecall;
 	};
 	DeclarationType  declarationType;
 	Declaration* next;
 };
+
+struct DefineCall{
+	char* id;
+	ArgumentList* argumentList;
+};
+
 
 struct Constant {
 	int value;
@@ -165,6 +186,7 @@ struct Expression {
 			Expression * leftExpression;
 			Expression * rightExpression;
 		};
+		DefineCall* definecall;
 	};
 	ExpressionType type;
 };
@@ -193,5 +215,8 @@ void destroyGlobalDeclaration(GlobalDeclaration * globalDeclaration);
 void destroyDefineDeclaration(DefineDeclaration * defineDeclaration);
 void destroyDefineParameterList(DefineParameterList * defineParameterList);
 void destroyDefineParameter(DefineParameter * defineParameter);
+void destroyDefineCall(DefineCall* definecall);
+void destroyArgumentList(ArgumentList* argumentList);
+void destroyArgument(Argument* argument);
 
 #endif

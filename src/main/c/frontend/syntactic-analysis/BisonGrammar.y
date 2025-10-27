@@ -47,6 +47,9 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 	DefineDeclaration * defineDeclaration;
 	DefineParameterList * defineParameterList;
 	DefineParameter * defineParameter;
+	DefineCall * defineCall;
+	ArgumentList * argumentList;
+	Argument * argument;
 }
 
 /**
@@ -71,6 +74,9 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %destructor { destroyDefineDeclaration($$); } <defineDeclaration>
 %destructor { destroyDefineParameter($$); } <defineParameter>
 %destructor { destroyDefineParameterList($$); } <defineParameterList>
+%destructor { destroyDefineCall($$); } <defineCall>
+%destructor { destroyArgument($$); } <argument>
+%destructor { destroyArgumentList($$); } <argumentList>
 
 /** Terminals. */
 %token <token> COMMA
@@ -113,6 +119,9 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %type <defineDeclaration> defineDeclaration
 %type <defineParameterList> defineParameterList
 %type <defineParameter> defineParameter
+%type <defineCall> defineCall
+%type <argumentList> argumentList
+%type <argument> argument
 
 /**
  * Precedence and associativity.
@@ -172,15 +181,25 @@ declaration: type ID SEMICOLON							    { $$ = VariableDeclarationSemanticActio
 	| type ID EQUALS expression SEMICOLON				    { $$ = AssignationDeclarationSemanticAction($1, $2, $4); }
 	| ID EQUALS expression SEMICOLON					    { $$ = AssignationDeclarationSemanticAction(NULL, $1, $3); }
 	| RETURN expression SEMICOLON						    { $$ = ReturnDeclarationSemanticAction($2); }
+	| defineCall											{ $$ = DefineCallDeclarationSemanticAction($1); }
 	;
 
+defineCall: ID OPEN_PARENTHESIS argumentList CLOSE_PARENTHESIS			{ $$ = DefineCallSemanticAction($1, $3); }
+	;
+argumentList: argumentList COMMA argument				{ $$ = ArgumentListSemanticAction($1, $3); }
+	| argument											{ $$ = SingleArgumentSemanticAction($1); }
+	| 													{ $$ = NULL; }
+	;
 
+argument: expression									{ $$ = ArgumentSemanticAction($1); }
+	;
 
 expression: expression[left] ADD expression[right]			{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
 	| expression[left] DIV expression[right]				{ $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }
 	| expression[left] MUL expression[right]				{ $$ = ArithmeticExpressionSemanticAction($left, $right, MULTIPLICATION); }
 	| expression[left] SUB expression[right]				{ $$ = ArithmeticExpressionSemanticAction($left, $right, SUBTRACTION); }
 	| factor												{ $$ = FactorExpressionSemanticAction($1); }
+	| defineCall											{ $$ = DefineCallExpressionSemanticAction($1); }
 	;
 
 factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS		{ $$ = ExpressionFactorSemanticAction($2); }
